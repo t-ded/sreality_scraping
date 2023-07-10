@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+  
+<html>
+<head>
+    <title>Sreality</title>
+</head>
+<body>
+  
+<ol>
+
+<li><h1>Test flat</h1></li>
+
+{% for flat in flats %}
+    <li><h3>{{ flat[0] }}</h3></li>
+    {% for img_url in flat[1] %}
+        <img src={{ img_url }} width=30px height=20px>
+    {% endfor %}
+{% endfor %}
+
+</ol>
+  
+</body>
+</html>

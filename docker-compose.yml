@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: flask_dockerfile.py
+    image: "webapp"
+    container_name: "docker-container-flask"
+    environment:
+      - BACKEND_HOST=webapp
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/code
+    restart: on-failure
+    depends_on:
+      - scrapy
+    healthcheck:
+        test: curl --fail http://127.0.0.1:8080 || exit 1
+        interval: 5s
+        timeout: 75s
+        retries: 3
+
+  scrapy:
+    build:
+      context: .
+      dockerfile: scrapy_dockerfile.py
+    image: "scrapy"
+    container_name: "docker-container-scrapy"
+    restart: on-failure
+    depends_on:
+      - postgres
+
+  postgres:
+    build:
+      context: .
+      dockerfile: postgres_dockerfile.py
+    image: "postgres"
+    container_name: "docker-container-postgres"
+    environment:
+      POSTGRES_DB: "sreality"
+      POSTGRES_USER: "testuser"
+      POSTGRES_PASSWORD: "testpassword"
+    ports:
+      - "5432:5432"
+    volumes:
+      - .:/db
